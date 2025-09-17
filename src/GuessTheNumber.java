@@ -4,7 +4,7 @@ import java.util.Scanner;
 public class GuessTheNumber {
     // Scanner til at læse input fra brugeren
     static Scanner input = new Scanner(System.in);
-
+    //
     // ANSI escape codes (bruges til farver og tekst-styling i terminalen)
     static final String RESET = "\u001B[0m";
     static final String UNDERLINE = "\u001B[4m";
