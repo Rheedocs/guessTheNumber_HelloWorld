@@ -70,7 +70,7 @@ public class GuessTheNumber {
         Random rand = new Random();
         int target = rand.nextInt(max + 1); // vælg tilfældigt tal
 
-        System.out.println("\nJeg har valgt et tal mellem " + GREEN + 0 + RESET + " og " + GREEN + + max + RESET + ". Gæt hvilket!");
+        System.out.println("\nJeg har valgt et tal mellem " + GREEN + 0 + RESET + " og " + GREEN + max + RESET + ". Gæt hvilket!");
         System.out.print("Indtast dit gæt: ");
 
         boolean guessedCorrectly = false;
