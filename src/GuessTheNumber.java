@@ -1,6 +1,6 @@
 import java.util.Random;
 import java.util.Scanner;
-// Test Comment
+
 public class GuessTheNumber {
     // Scanner til at læse input fra brugeren
     static Scanner input = new Scanner(System.in);
