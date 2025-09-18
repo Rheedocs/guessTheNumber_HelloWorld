@@ -13,17 +13,32 @@ public class GuessTheNumber {
     static final String RED = "\u001B[31m";
 
     public static void main(String[] args) {
-        // Startbesked til brugeren
-        System.out.println("\n=== Velkommen til Gæt et tal spillet! ===");
+        printWelcomeMessage();
 
-        // Starter spillet (ét spil ad gangen)
-        playGame();
+        boolean playAgain = true;   // styrer om spillet fortsætter
+        int antalSpil = 0;          // tæller hvor mange spil der er spillet
+        int totalAttempts = 0;      // tæller hvor mange gæt i alt
 
-        // Lukker scanner, når programmet slutter
+        // Spilløkke - kører så længe brugeren svarer "ja"
+        while (playAgain) {
+            int attempts = playGame();   // playGame returnerer antal gæt
+            antalSpil++;
+            totalAttempts += attempts;
+
+            // Spørg om brugeren vil spille igen
+            playAgain = handlePlayAgain();
+            if (playAgain) {
+                // Hvis ja → start en ny runde
+                System.out.println("\n----------------------------------------------------");
+                System.out.println("=== NY RUNDE ===");
+                System.out.println("----------------------------------------------------");
+            }
+        }
+
+        printFinalStats(antalSpil, totalAttempts);
+        // Lukker scanner til allersidst
         input.close();
-
     }
-
     // --- Metode til at vælge sværhedsgrad ---
     // Returnerer det maksimale tal, der kan gættes på (10, 100, 1000)
     public static int chooseDifficulty() {
@@ -41,7 +56,7 @@ public class GuessTheNumber {
                 if (choice == 1) return 10;
                 else if (choice == 2) return 100;
                 else if (choice == 3) return 1000;
-                else System.out.println("Ugyldigt valg, prøv igen! (vælg 1, 2 eller 3)");
+                else System.out.println("\nUgyldigt valg, prøv igen! (vælg 1, 2 eller 3)");
             } else {
                 // hvis brugeren skrev fx "ost"
                 System.out.println("\nUgyldigt input\nDu skal indtaste et tal (vælg 1, 2 eller 3).");
@@ -49,7 +64,6 @@ public class GuessTheNumber {
             }
         }
     }
-
     // --- Metode til at tjekke brugerens gæt ---
     // Returnerer en tekst: "for lavt", "for højt" eller "korrekt"
     public static String checkGuess(int guess, int target) {
@@ -61,12 +75,10 @@ public class GuessTheNumber {
             return "korrekt";
         }
     }
-
     // --- Selve spillet ---
     // Kører et spil, indtil brugeren har gættet det rigtige tal
-    public static void playGame() {
+    public static int playGame() {
         int max = chooseDifficulty(); // vælg sværhedsgrad
-
         Random rand = new Random();
         int target = rand.nextInt(max + 1); // vælg tilfældigt tal
 
@@ -79,27 +91,22 @@ public class GuessTheNumber {
         while (!guessedCorrectly) {
             if (input.hasNextInt()) {
                 int guess = input.nextInt();
-                attempts++;
+                attempts++; // hver gang brugeren gætter, tælles der et forsøg
 
                 String result = checkGuess(guess, target);
 
                 if (result.equals("for lavt")) {
-                    System.out.println("\nDit gæt er for lavt, prøv igen!");
-                    System.out.print("Indtast dit gæt: ");
+                    System.out.println("Dit gæt er for lavt, prøv igen! (0-" + max + ")");
+                    System.out.print("\nIndtast dit gæt: ");
                 } else if (result.equals("for højt")) {
-                    System.out.println("\nDit gæt er for højt, prøv igen!");
-                    System.out.print("Indtast dit gæt: ");
+                    System.out.println("Dit gæt er for højt, prøv igen! (0-" + max + ")");
+                    System.out.print("\nIndtast dit gæt: ");
                 } else {
                     // Når svaret er korrekt:
+                    System.out.println("\n----------------------------------------------------");
                     System.out.println("\n\uD83C\uDF89 Tillykke! Du gættede rigtigt på " + GREEN + UNDERLINE + attempts + RESET + " forsøg. \uD83C\uDF89\n");
+                    System.out.println("----------------------------------------------------\n");
                     guessedCorrectly = true;
-
-                    // Spørg om brugeren vil spille igen
-                    if (handlePlayAgain()) {
-                        playGame(); // starter et nyt spil
-                    } else {
-                        System.out.println("\n\uD83D\uDC4B Tak for spillet! \uD83D\uDC4B");
-                    }
                 }
             } else {
                 // Hvis input ikke er et tal
@@ -108,8 +115,8 @@ public class GuessTheNumber {
                 input.next(); // rydder det forkerte input
             }
         }
+        return attempts; // giver antallet af forsøg tilbage til main
     }
-
     // --- Spørger om man vil spille igen ---
     // Brugeren SKAL svare "ja" eller "nej"
     // .toLowerCase(); sørger for man kan skrive det småt eller stort.
@@ -128,5 +135,19 @@ public class GuessTheNumber {
                     System.out.println("\n*Suk* Ugyldigt input...");
             }
         }
+    }
+        // --- Udskriver velkomstbesked ---
+        public static void printWelcomeMessage() {
+            System.out.println("\n=== Velkommen til Gæt et tal spillet! ===");
+    }
+        // --- Udskriver slutstatistik ---
+        public static void printFinalStats(int antalSpil, int totalAttempts) {
+            System.out.println("\n----------------------------------------------------\n");
+            System.out.println("👋 Tak for spillet! 👋");
+            System.out.println("Du spillede " + antalSpil + " runde(r).");
+            System.out.println("Samlet antal gæt: " + totalAttempts);
+            double gennemsnit = (double) totalAttempts / antalSpil;
+            System.out.printf("Gennemsnitlige gæt pr. spil: %.2f%n", gennemsnit);
+            System.out.println("\n----------------------------------------------------");
     }
 }
